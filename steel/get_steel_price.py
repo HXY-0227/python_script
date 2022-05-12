@@ -101,7 +101,7 @@ def init():
 
     global wb
     wb = None
-    wb = load_workbook(filename=file_path + '\\武汉行政区域直管项目钢材信息价（和合盈升）模板.xlsx')
+    wb = load_workbook(filename=file_path + '\\安装直管项目钢材信息价（和合盈升）-模板.xlsx')
     print('load excel template successfully...')
 
 def save_pipe(begin_time, end_time):
@@ -121,53 +121,53 @@ def save_pipe(begin_time, end_time):
 
     seamless_tube_data = []
     for daily_page in all_page['seamless_tube_market_list']:
-        seamless_tube_data.append(get_daily_pipe_data(daily_page, '流体管', 'Ф159*6', './td[3]','./td[6]'))
-    writeExcel(seamless_tube_data, 'N35')
+        seamless_tube_data.append(get_daily_pipe_data(daily_page, '流体管', 'Φ159*6', './td[3]','./td[6]'))
+    writeExcel(seamless_tube_data, 'N44')
 
     spiral_tube_data = []
     for daily_page in all_page['spiral_tube_market_list']:
         spiral_tube_data.append(get_daily_pipe_data(daily_page, '螺旋管', '426*6-8', './td[2]','./td[5]'))
-    writeExcel(spiral_tube_data, 'N106')
+    writeExcel(spiral_tube_data, 'N118')
 
     galvanized_pipe_data = []
     for daily_page in all_page['galvanized_pipe_market_list']:
         galvanized_pipe_data.append(get_daily_pipe_data(daily_page, '镀锌管', '4寸*3.75mm', './td[2]','./td[6]'))
-    writeExcel(galvanized_pipe_data, 'N162')
+    writeExcel(galvanized_pipe_data, 'N180')
 
     galvanized_coil_data = []
     for daily_page in all_page['galvanized_coil_list']:
         galvanized_coil_data.append(get_daily_pipe_data(daily_page, '镀锌板卷', '1.5*1250*C', './td[2]','./td[5]'))
-    writeExcel(galvanized_coil_data, 'N204')
+    writeExcel(galvanized_coil_data, 'N223')
 
     hot_rolled_coil_data = []
     for daily_page in all_page['hot_rolled_coil_list']:
         hot_rolled_coil_data.append(get_daily_pipe_data(daily_page, '热轧板卷', '5.75-11.5*1500*C', './td[2]','./td[5]'))
-    writeExcel(hot_rolled_coil_data, 'N225')
+    writeExcel(hot_rolled_coil_data, 'N244')
 
     pattern_coil_data = []
     for daily_page in all_page['pattern_coil_list']:
         pattern_coil_data.append(get_daily_pipe_data(daily_page, '花纹板卷', '3.5*1250*C', './td[2]','./td[5]'))
-    writeExcel(pattern_coil_data, 'N259')
+    writeExcel(pattern_coil_data, 'N279')
 
     h_beam_data = []
     for daily_page in all_page['h_beam_list']:
         h_beam_data.append(get_daily_pipe_data(daily_page, 'H型钢', '250*250*9*14', './td[2]','./td[5]'))
-    writeExcel(h_beam_data, 'N269')
+    writeExcel(h_beam_data, 'N289')
 
     angle_channel_steel_data = []
     for daily_page in all_page['angle_channel_steel_list']:
         angle_channel_steel_data.append(get_daily_pipe_data(daily_page, '工字钢', '20#', './td[2]','./td[5]'))
-    writeExcel(angle_channel_steel_data, 'N297')
+    writeExcel(angle_channel_steel_data, 'N318')
     
     round_bar_data = []
     for daily_page in all_page['round_bar_list']:
-        round_bar_data.append(get_daily_pipe_data(daily_page, '圆钢', 'Ф16-25', './td[2]','./td[5]'))
-    writeExcel(round_bar_data, 'N275')
+        round_bar_data.append(get_daily_pipe_data(daily_page, '圆钢', 'Φ16-25', './td[2]','./td[5]'))
+    writeExcel(round_bar_data, 'N296')
 
     square_steel_data = []
     for daily_page in all_page['square_steel_list']:
         square_steel_data.append(get_daily_pipe_data(daily_page, '方钢', '20*20', './td[2]','./td[5]'))
-    writeExcel(square_steel_data, 'N378')
+    writeExcel(square_steel_data, 'N420')
 
     print('write all pipe price to excel successfully...')
 
@@ -220,35 +220,38 @@ def get_all_pipe_data_url(begin_time, end_time):
                 dailyMarketPage = DailyMarketPage()
                 dailyMarketPage.current_date = dates[i][0:10]
                 dailyMarketPage.title = titles[i]
-                dailyMarketPage.url = item_urls[i]
+                if 'https:' in item_urls[i]:
+                    dailyMarketPage.url = item_urls[i][6:]
+                else:
+                    dailyMarketPage.url = item_urls[i]
 
                 if '（' in dailyMarketPage.title:
                     continue
 
                 global save_sheet
-                save_sheet.append(dailyMarketPage.title.split('武')[0])
+                save_sheet.append(getDay(dailyMarketPage.title))
 
-                if '焊管' in dailyMarketPage.title:
+                if '焊管' in dailyMarketPage.title and '武汉' in dailyMarketPage.title:
                     welded_pipe_market_list.append(dailyMarketPage)
-                elif '无缝管' in dailyMarketPage.title:
+                elif '无缝管' in dailyMarketPage.title and '武汉' in dailyMarketPage.title:
                     seamless_tube_market_list.append(dailyMarketPage)
-                elif '螺旋管' in dailyMarketPage.title:
+                elif '螺旋管' in dailyMarketPage.title and '武汉' in dailyMarketPage.title:
                     spiral_tube_market_list.append(dailyMarketPage)
-                elif '镀锌管' in dailyMarketPage.title:
+                elif '镀锌管' in dailyMarketPage.title and '武汉' in dailyMarketPage.title:
                     galvanized_pipe_market_list.append(dailyMarketPage)
-                elif '镀锌板卷' in dailyMarketPage.title:
+                elif '镀锌板卷' in dailyMarketPage.title and '武汉' in dailyMarketPage.title:
                     galvanized_coil_list.append(dailyMarketPage)
-                elif '热轧板卷' in dailyMarketPage.title:
+                elif '热轧板卷' in dailyMarketPage.title and '武汉' in dailyMarketPage.title:
                     hot_rolled_coil_list.append(dailyMarketPage)
-                elif '花纹板卷' in dailyMarketPage.title:
+                elif '花纹板卷' in dailyMarketPage.title and '南昌' in dailyMarketPage.title:
                     pattern_coil_list.append(dailyMarketPage)
-                elif 'H型钢' in dailyMarketPage.title:
+                elif 'H型钢' in dailyMarketPage.title and '武汉' in dailyMarketPage.title:
                     h_beam_list.append(dailyMarketPage)
-                elif '工角槽钢' in dailyMarketPage.title:
+                elif '工角槽' in dailyMarketPage.title and '武汉' in dailyMarketPage.title:
                     angle_channel_steel_list.append(dailyMarketPage)
-                elif '建筑钢材' in dailyMarketPage.title:
+                elif '建筑钢材' in dailyMarketPage.title and '武汉' in dailyMarketPage.title:
                     round_bar_list.append(dailyMarketPage)
-                elif '方钢' in dailyMarketPage.title:
+                elif '方钢' in dailyMarketPage.title and '上海' in dailyMarketPage.title:
                     square_steel_list.append(dailyMarketPage)
 
     pipe_url = {}
@@ -280,6 +283,7 @@ def get_daily_pipe_data(dailyData, name, specifications, specifications_index, p
     """
 
     # 抓取数据
+    print('get the {} from the url {}'.format(dailyData.title, dailyData.url))
     response = requests.get('http:' + dailyData.url, headers=header, cookies=cookies)
     dom_tree = etree.HTML(response.content)
 
@@ -301,13 +305,14 @@ def get_daily_pipe_data(dailyData, name, specifications, specifications_index, p
         dailyMarketDetail = DailyMarketDetail()
         dailyMarketDetail.pipe_name = daily_pipe_all_price[0].pipe_name
         dailyMarketDetail.specifications = daily_pipe_all_price[0].specifications
-        dailyMarketDetail.price = sum(item.price for item in daily_pipe_all_price) / len(daily_pipe_all_price)
-        if dailyMarketDetail.pipe_name == '花纹板卷':
-            dailyMarketDetail.date = dailyData.title.split('南')[0]
-        elif dailyMarketDetail.pipe_name == '方钢':
-            dailyMarketDetail.date = dailyData.title.split('上')[0]
+        dailyMarketDetail.date = getDay(dailyData.title)
+
+        if dailyMarketDetail.pipe_name == '圆钢':
+            dailyMarketDetail.price = sum(item.price for item in daily_pipe_all_price) / len(daily_pipe_all_price) - 140
         else:
-            dailyMarketDetail.date = dailyData.title.split('武')[0]
+            dailyMarketDetail.price = sum(item.price for item in daily_pipe_all_price) / len(daily_pipe_all_price)
+
+        print('steel name: {}, price: {}, date: {}'.format(dailyMarketDetail.pipe_name, dailyMarketDetail.price, dailyData.current_date))
         return dailyMarketDetail
 
 def writeExcel(data, position):
@@ -324,7 +329,12 @@ def writeExcel(data, position):
                 ws[position] = dailyData.price
             except KeyError:
                 print('filter the repeat data, ingore the message...')
-        
+
+def getDay(title):
+    begin = title.find('月')
+    end = title.find('日')
+    return title[begin + 1 : end + 1]
+
 
 if __name__ == "__main__":
     init()
@@ -338,6 +348,7 @@ if __name__ == "__main__":
     for sheet in all_sheet:
         if sheet not in set(save_sheet):
             del wb[sheet]
-
-    wb.save(filename=file_path + '\\武汉行政区域直管项目钢材信息价（和合盈升）.xlsx')
+            
+    wb.save(filename=file_path + '\\安装直管项目钢材信息价（和合盈升）.xlsx')
     print('save excel successfully...')
+    input('press any key to exit')
